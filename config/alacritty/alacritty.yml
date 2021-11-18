@@ -1,0 +1,59 @@
+env:
+  TERM: alacritty
+  LANG: "en_US.UTF-8"
+  LC_CTYPE: en_US.UTF-8
+
+window:
+  dynamic_padding: true
+  dynamic_title: true
+
+font:
+  normal:
+    family: Ubuntu Mono Nerd Font
+    style: Bold
+
+  bold:
+    family: Ubuntu Mono Nerd Font
+    style: Bold
+
+  italic:
+    family: Ubuntu Mono Nerd Font
+    style: Bold Italic
+
+  bold_italic:
+    family: Ubuntu Mono Nerd Font
+    style: Bold Italic
+
+  size: 11
+
+colors:
+  # Default colors
+  primary:
+    background: '#05050b'
+    foreground: '#d1d1d1'
+
+  normal:
+      black:   '#32344a'
+      red:     '#E74B64'
+      green:   '#71A83E'
+      yellow:  '#F2763A'
+      blue:    '#2f59c4'
+      magenta: '#5e3ca3'
+      cyan:    '#198191'
+      white:   '#d1d1d1'
+
+  bright:
+      black:   '#444b6a'
+      red:     '#f7768e'
+      green:   '#9ece6a'
+      yellow:  '#e0af68'
+      blue:    '#7aa2f7'
+      magenta: '#ad8ee6'
+      cyan:    '#449dab'
+      white:   '#acb0d0'
+
+cursor:
+  style:
+    shape: Beam
+    blinking: On
+

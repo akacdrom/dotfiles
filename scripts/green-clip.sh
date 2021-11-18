@@ -1,0 +1,1 @@
+rofi -width 50 -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}' && notify-send "Saved text to clipboard" -i '/usr/share/icons/Papirus-Dark/48x48/apps/com.github.davidmhewitt.clipped.svg' -t 2000
