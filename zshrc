@@ -101,7 +101,6 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-alias wif="nmcli device wifi connect bde3d2-2.4G password 282671514"
 
 
 alias clean="sudo pacman -Qttdq | sudo pacman -Rns -"
