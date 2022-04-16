@@ -3,88 +3,7 @@ local awful         = require("awful")
 local beautiful     = require("beautiful")
 local naughty       = require("naughty")
 local gears         = require("gears")
-local cairo         = require("lgi").cairo
 local module_path = (...):match ("(.+/)[^/]+$") or ""
-
-local theme = beautiful.get()
-
-function dbg(message)
-    naughty.notify({ preset = naughty.config.presets.normal,
-                     title = "debug",
-                     text = message })
-end
-
-local function draw_signal(level)
-    -- draw 32x32 for simplicity, imagebox will resize it using loseless transform
-    local img = cairo.ImageSurface.create(cairo.Format.ARGB32, 32, 32)
-    local cr  = cairo.Context(img)
-
-    cr:set_source(gears.color(theme.fg_normal))
-    if level > 75 then
-        cr:arc(         32/2, 32/2, 32/2, 145*math.pi/180, 395*math.pi/180)
-        cr:arc_negative(32/2, 32/2, 32/2-3, 395*math.pi/180, 145*math.pi/180)
-    end
-    if level > 50 then
-        cr:arc(         32/2, 32/2, 24/2, 145*math.pi/180, 395*math.pi/180)
-        cr:arc_negative(32/2, 32/2, 24/2-3, 395*math.pi/180, 145*math.pi/180)
-    end
-    if level > 25 then
-        cr:arc(         32/2, 32/2, 16/2, 145*math.pi/180, 395*math.pi/180)
-        cr:arc_negative(32/2, 32/2, 16/2-3, 395*math.pi/180, 145*math.pi/180)
-    end
-    cr:rectangle(32/2-1, 32/2-1, 2, 32/2-2)
-    cr:fill()
-
-    if level == 0 then
-        cr:set_source(gears.color("#cf5050"))
-        gears.shape.transform(gears.shape.cross)
-            :rotate(45*math.pi/180)
-                :translate(12, -10)(cr, 10, 10, 3)
-    end
-
-    cr:close_path()
-    cr:fill()
-    return img
-end
-
-function net_stats(card,which)
-    local prefix = {
-        [0] = "",
-        [1] = "K",
-        [2] = "M",
-        [3] = "G",
-        [4] = "T"
-    }
-
-    local function readAll(file)
-        local f = assert(io.open(file, "rb"))
-        local content = f:read()
-         f:close()
-        return content
-    end
-
-    local function round(num, numDecimalPlaces)
-        local mult = 10^(numDecimalPlaces or 0)
-        return math.floor(num * mult + 0.5) / mult
-    end
-
-    if (which == "d") then
-        f = readAll("/sys/class/net/" .. card .. "/statistics/rx_bytes")
-    else if (which == "u") then
-        f = readAll("/sys/class/net/" .. card .. "/statistics/tx_bytes")
-        end
-    end
-
-    local count = 0
-    local stat = tonumber(f)
-    while (stat > 1024) do
-        stat = (stat / 1024)
-        count = count + 1
-    end
-
-    result = (round(stat,2) .." "..prefix[count].."B")
-    return result
-end
 
 local wireless = {}
 local function worker(args)
@@ -94,7 +13,6 @@ local function worker(args)
     local connected = false
 
     -- Settings
-    local ICON_DIR      = awful.util.getdir("config").."/"..module_path.."/net_widgets/icons/"
     local interface     = args.interface or "wlan0"
     local timeout       = args.timeout or 5
     local font          = args.font or beautiful.font

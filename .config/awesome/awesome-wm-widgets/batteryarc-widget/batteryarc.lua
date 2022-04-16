@@ -143,7 +143,7 @@ local discharging = false
             text.text = ''
         end
 
-        if os.difftime(os.time(), last_battery_check) > 5 and discharging then
+        if os.difftime(os.time(), last_battery_check) > 60 and discharging then
           last_battery_check = os.time()
           show_battery_warning()
         end

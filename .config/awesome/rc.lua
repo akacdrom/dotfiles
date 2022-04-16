@@ -76,6 +76,7 @@ awful.layout.layouts = {
 -- Create a textclock widget
 mytextclock = wibox.widget.textclock(" %H:%M")
 
+-- Create wifi status widget
 net_wireless = net_widgets.wireless({
         interface = "wlp2s0",
         popup_position = "bottom_right",
@@ -192,7 +193,6 @@ awful.screen.connect_for_each_screen(function(s)
       }
     }
     
-
     -- Create the wibox
     s.mywibox = awful.wibar({ position = "bottom", screen = s , height = 20})
 
