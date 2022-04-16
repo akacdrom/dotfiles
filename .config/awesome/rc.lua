@@ -22,6 +22,8 @@ local ram_widget = require("awesome-wm-widgets.ram-widget.ram-widget")
 local batteryarc_widget = require("awesome-wm-widgets.batteryarc-widget.batteryarc")
 --Volume widget
 local volume_widget = require('awesome-wm-widgets.volume-widget.volume')
+--Wifi widget
+local net_widgets = require("net_widgets")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -73,6 +75,12 @@ awful.layout.layouts = {
 -- {{{ Wibar
 -- Create a textclock widget
 mytextclock = wibox.widget.textclock(" %H:%M")
+
+net_wireless = net_widgets.wireless({
+        interface = "wlp2s0",
+        popup_position = "bottom_right",
+        popup_signal=true,
+})
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
@@ -154,7 +162,6 @@ local month_calendar = awful.widget.calendar_popup.month(
 )
 month_calendar:attach( mytextclock, "br")
 
-
 awful.screen.connect_for_each_screen(function(s)
 
     -- Each screen has its own tag table.
@@ -184,6 +191,7 @@ awful.screen.connect_for_each_screen(function(s)
           align = "center"
       }
     }
+    
 
     -- Create the wibox
     s.mywibox = awful.wibar({ position = "bottom", screen = s , height = 20})
@@ -198,31 +206,27 @@ awful.screen.connect_for_each_screen(function(s)
         s.mytasklist, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-           -- mykeyboardlayout,
+            net_wireless,
             wibox.widget.systray(),
             wibox.container.margin(brightness_widget{
               type = 'arc',
               program = 'brightnessctl',
               step = 5,
-              timeout = 1,
+              timeout = 2,
               tooltip = false,
               base = 100
             },5,5,0,0),
             batteryarc_widget({
-              timeout = 5,
               font = "JetbrainsMono ExtraBold Nerd Font 6",
               show_current_level = true,
             }),
             wibox.container.margin(volume_widget{
               widget_type = 'arc',
-              refresh_rate = 1,
             },5,5,0,0),
             cpu_widget{
-              step_spacing = 0,
               width = 20
             },
             ram_widget{
-              timeout = 1,
               widget_show_buf = false,
               color_used = "#392b57"
             },
