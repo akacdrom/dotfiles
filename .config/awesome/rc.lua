@@ -14,10 +14,6 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 --Brightness widget
 local brightness_widget = require("awesome-wm-widgets.brightness-widget.brightness")
---CPU usage widget
-local cpu_widget = require("awesome-wm-widgets.cpu-widget.cpu-widget")
---RAM usage widget
-local ram_widget = require("awesome-wm-widgets.ram-widget.ram-widget")
 --Battery widget
 local batteryarc_widget = require("awesome-wm-widgets.batteryarc-widget.batteryarc")
 --Volume widget
@@ -74,14 +70,10 @@ awful.layout.layouts = {
 
 -- {{{ Wibar
 -- Create a textclock widget
-mytextclock = wibox.widget.textclock(" %H:%M")
+mytextclock = wibox.widget.textclock("|  %H:%M")
 
 -- Create wifi status widget
-net_wireless = net_widgets.wireless({
-        interface = "wlp2s0",
-        popup_position = "bottom_right",
-        popup_signal=true,
-})
+net_wireless = net_widgets.wireless()
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
@@ -180,7 +172,7 @@ awful.screen.connect_for_each_screen(function(s)
     s.mytaglist = awful.widget.taglist {
         screen  = s,
         filter  = awful.widget.taglist.filter.all,
-        buttons = taglist_buttons
+        buttons = taglist_buttons,
     }
 
     -- Create a tasklist widget
@@ -206,7 +198,6 @@ awful.screen.connect_for_each_screen(function(s)
         s.mytasklist, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            net_wireless,
             wibox.widget.systray(),
             wibox.container.margin(brightness_widget{
               type = 'arc',
@@ -223,13 +214,7 @@ awful.screen.connect_for_each_screen(function(s)
             wibox.container.margin(volume_widget{
               widget_type = 'arc',
             },5,5,0,0),
-            cpu_widget{
-              width = 20
-            },
-            ram_widget{
-              widget_show_buf = false,
-              color_used = "#392b57"
-            },
+            net_wireless,
             wibox.container.margin(mytextclock,5,5,0,0),
             wibox.container.margin(s.mylayoutbox,0,0,2,2)
         },

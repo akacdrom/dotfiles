@@ -13,33 +13,68 @@ local function worker(args)
     local connected = false
 
     -- Settings
-    local interface     = args.interface or "wlan0"
-    local timeout       = args.timeout or 5
-    local font          = args.font or beautiful.font
-    local popup_signal  = args.popup_signal or false
-    local popup_position = args.popup_position or naughty.config.defaults.position
+    local interface     = "wlp2s0"
+    local timeout       = 5
+    local font          = beautiful.font
+    local popup_signal  = true
+    local popup_position = "bottom_right"
     local onclick       = args.onclick
     local widget        = args.widget == nil and wibox.layout.fixed.horizontal() or args.widget == false and nil or args.widget
-    local indent        = args.indent or 3
-    local popup_metrics	= args.popup_metrics or false
+    local indent        = 3
+    local popup_metrics	= false
 
     local net_icon = wibox.widget.imagebox()
-    local net_text = wibox.widget.textbox()
-    net_text.font = font
-    net_text:set_text(" N/A ")
     local signal_level = 0
+    local connection_lost = false
+    local first_request = true
+        local function show_wifi_connect()
+              naughty.notify {
+              icon = "/home/cd-r0m/.config/awesome/awesome-wm-widgets/batteryarc-widget/spaceman.jpg",
+              icon_size = 100,
+              text = "I'm feeling online :)",
+              title = "Houston, we have a good new",
+              timeout = 5, -- show the warning for a longer time
+              hover_timeout = 1,
+              position = "bottom_right",
+              bg = "#448047",
+              fg = "#EEE9EF",
+              width = 400,
+              }
+          end
+          local function show_wifi_lost()
+              naughty.notify {
+              icon = "/home/cd-r0m/.config/awesome/awesome-wm-widgets/batteryarc-widget/spaceman.jpg",
+              icon_size = 100,
+              text = "Wifi connection is lost :(",
+              title = "Houston, we have a problem",
+              timeout = 5, -- show the warning for a longer time
+              hover_timeout = 1,
+              position = "bottom_right",
+              bg = "#F06060",
+              fg = "#EEE9EF",
+              width = 400,
+              }
+          end
+
     local function net_update()
         awful.spawn.easy_async("awk 'NR==3 {printf \"%3.0f\" ,($3/70)*100}' /proc/net/wireless", function(stdout, stderr, reason, exit_code)
           signal_level = tonumber( stdout )
         end)
         if signal_level == nil then
+          if connection_lost then
+              show_wifi_lost()
+              connection_lost = false
+          end
             connected = false
-            net_text:set_text(" N/A ")
-            net_icon:set_image("/home/cd-r0m/.config/awesome/net_widgets/icons/no-wifi")
+            net_icon:set_image("/home/cd-r0m/.config/awesome/net_widgets/icons/no-wifi.png")
         else
+            if not connection_lost and not first_request then
+              show_wifi_connect()
+            end
             connected = true
-            net_text:set_text(string.format("%"..indent.."d%%", signal_level))
-            net_icon:set_image("/home/cd-r0m/.config/awesome/net_widgets/icons/wifi.svg")
+            net_icon:set_image("/home/cd-r0m/.config/awesome/net_widgets/icons/wifi.png")
+            connection_lost = true
+            first_request = false
         end
     end
 
@@ -48,17 +83,11 @@ local function worker(args)
       return true end )
 
     widgets_table["imagebox"]	= net_icon
-    widgets_table["textbox"]	= net_text
     if widget then
             widget:add(net_icon)
             -- Hide the text when we want to popup the signal instead
-            if not popup_signal then
-                    widget:add(net_text)
-            end
             wireless:attach(widget,{onclick = onclick})
     end
-
-
 
     local function text_grabber()
         local msg = ""
@@ -88,7 +117,9 @@ local function worker(args)
 
             signal = ""
             if popup_signal then
+              if not signal_level == nil then
                 signal = "├Strength\t"..signal_level.."\n"
+              end
             end
 
             metrics_down = ""
@@ -129,7 +160,6 @@ local function worker(args)
 
     function wireless:show(t_out)
             wireless:hide()
-
             notification = naughty.notify({
                     preset = fs_notification_preset,
                     text = text_grabber(),
