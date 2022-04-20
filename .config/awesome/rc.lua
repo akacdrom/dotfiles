@@ -251,7 +251,7 @@ globalkeys = gears.table.join(
         { description = "increase volume", group = "launcher" }),
     awful.key({ modkey, }, "F11", function() awful.spawn("/home/cd-r0m/.scripts/vol-not.sh down") end,
         { description = "decrease volume", group = "launcher" }),
-    awful.key({ modkey, }, "F10", function() awful.spawn("pamixer -m") end,
+    awful.key({ modkey, }, "F10", function() awful.spawn("pamixer -t") end,
         { description = "mute volume", group = "launcher" }),
     awful.key({}, "Print", function() awful.spawn("/home/cd-r0m/.scripts/screenshot-full.sh") end,
         { description = "full screenshot", group = "launcher" }),

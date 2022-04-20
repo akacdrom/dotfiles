@@ -1,35 +1,16 @@
--------------------------------------------------
--- Brightness Widget for Awesome Window Manager
--- Shows the brightness level of the laptop display
--- More details could be found here:
--- https://github.com/streetturtle/awesome-wm-widgets/tree/master/brightness-widget
-
--- @author Pavel Makhov
--- @copyright 2021 Pavel Makhov
--------------------------------------------------
-
 local awful = require("awful")
 local wibox = require("wibox")
 local watch = require("awful.widget.watch")
 local spawn = require("awful.spawn")
-local naughty = require("naughty")
-
-local get_brightness_cmd
-local set_brightness_cmd
-local inc_brightness_cmd
-local dec_brightness_cmd
 
 local brightness_widget = {}
 
-local function worker(user_args)
+local function worker()
 
-    local args = user_args or {}
-
-    local current_level = 0 -- current brightness value
-    get_brightness_cmd = 'bash -c "brightnessctl -m | cut -d, -f4 | tr -d %"'
-    set_brightness_cmd = 'brightnessctl set %d%%' -- <level>
-    inc_brightness_cmd = 'brightnessctl set 5%+'
-    dec_brightness_cmd = 'brightnessctl set 5%-'
+    local get_brightness_cmd = 'bash -c "brightnessctl -m | cut -d, -f4 | tr -d %"'
+    local set_brightness_cmd = 'brightnessctl set %d%%'
+    local inc_brightness_cmd = 'brightnessctl set 5%+'
+    local dec_brightness_cmd = 'brightnessctl set 5%-'
 
     brightness_widget.widget = wibox.widget {
         {
@@ -46,6 +27,7 @@ local function worker(user_args)
         start_angle = 4.71238898, -- 2pi*3/4
         forced_height = 18,
         forced_width = 18,
+        bg = '#ffffff11',
         paddings = 2,
         widget = wibox.container.arcchart,
         set_value = function(self, level)
@@ -55,34 +37,15 @@ local function worker(user_args)
 
     local update_widget = function(widget, stdout, _, _, _)
         local brightness_level = tonumber(string.format("%.0f", stdout))
-        current_level = brightness_level
         widget:set_value(brightness_level)
     end
 
     function brightness_widget:set(value)
-        current_level = value
         spawn.easy_async(string.format(set_brightness_cmd, value), function()
             spawn.easy_async(get_brightness_cmd, function(out)
                 update_widget(brightness_widget.widget, out)
             end)
         end)
-    end
-
-    local old_level = 0
-    function brightness_widget:toggle()
-        if old_level < 0.1 then
-            -- avoid toggling between '0' and 'almost 0'
-            old_level = 1
-        end
-        if current_level < 0.1 then
-            -- restore previous level
-            current_level = old_level
-        else
-            -- save current brightness for later
-            old_level = current_level
-            current_level = 0
-        end
-        brightness_widget:set(current_level)
     end
 
     function brightness_widget:inc()
@@ -104,17 +67,14 @@ local function worker(user_args)
     brightness_widget.widget:buttons(
         awful.util.table.join(
             awful.button({}, 1, function() brightness_widget:set(100) end),
-            awful.button({}, 3, function() brightness_widget:toggle() end),
             awful.button({}, 4, function() brightness_widget:inc() end),
             awful.button({}, 5, function() brightness_widget:dec() end)
         )
     )
 
-    watch(get_brightness_cmd, 2, update_widget, brightness_widget.widget)
+    watch(get_brightness_cmd, 6, update_widget, brightness_widget.widget)
 
     return brightness_widget.widget
 end
 
-return setmetatable(brightness_widget, { __call = function(_, ...)
-    return worker(...)
-end })
+return setmetatable(brightness_widget, { __call = function(_, ...) return worker() end })

@@ -1,13 +1,3 @@
--------------------------------------------------
--- Battery Arc Widget for Awesome Window Manager
--- Shows the battery level of the laptop
--- More details could be found here:
--- https://github.com/streetturtle/awesome-wm-widgets/tree/master/batteryarc-widget
-
--- @author Pavel Makhov
--- @copyright 2020 Pavel Makhov
--------------------------------------------------
-
 local awful = require("awful")
 local beautiful = require("beautiful")
 local naughty = require("naughty")
@@ -41,9 +31,6 @@ local function worker()
         widget = wibox.container.arcchart
     }
 
-    local last_battery_check = os.time()
-
-    --[[ Show warning notification ]]
     local function show_battery_warning()
         naughty.notify {
             icon = warning_msg_icon,
@@ -112,7 +99,7 @@ local function worker()
 
     end
 
-    watch("acpi", 2, update_widget, batteryarc_widget)
+    watch("acpi", 10, update_widget, batteryarc_widget)
 
     -- Popup with battery info
     local notification
@@ -136,6 +123,4 @@ local function worker()
 
 end
 
-return setmetatable(batteryarc_widget, { __call = function(_, ...)
-    return worker()
-end })
+return setmetatable(batteryarc_widget, { __call = function(_, ...) return worker() end })

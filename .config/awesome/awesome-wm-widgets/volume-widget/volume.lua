@@ -1,104 +1,137 @@
--------------------------------------------------
--- The Ultimate Volume Widget for Awesome Window Manager
--- More details could be found here:
--- https://github.com/streetturtle/awesome-wm-widgets/tree/master/volume-widget
-
--- @author Pavel Makhov
--- @copyright 2020 Pavel Makhov
--------------------------------------------------
-
 local awful = require("awful")
 local spawn = require("awful.spawn")
 local watch = require("awful.widget.watch")
 local wibox = require("wibox")
 local beautiful = require('beautiful')
+local naughty = require("naughty")
 
 
-local widget = {}
+local volume_widget = {}
 
-function widget.get_widget(widgets_args)
-    local args = widgets_args or {}
+local function worker()
 
-    local size = 18
+    local get_volume_cmd = 'pamixer --get-volume'
+    local inc_volume_cmd = 'pamixer -i 5 --set-limit 100'
+    local dec_volume_cmd = 'pamixer -d 5'
+    local tog_volume_cmd = 'pamixer -t'
+    local get_mute_status = 'pamixer --get-mute'
+    local notify_icon = '/home/cd-r0m/.config/awesome/awesome-wm-widgets/volume-widget/spaceman.jpg'
+    local notify_position = 'bottom_right'
 
-    return wibox.widget {
+    volume_widget.widget = wibox.widget {
         {
-            id = "icon",
-            image = '/home/cd-r0m/.config/awesome/awesome-wm-widgets/volume-widget/icons/audio-volume-high-symbolic.svg',
-            resize = true,
-            widget = wibox.widget.imagebox,
+            {
+                image = "/home/cd-r0m/.config/awesome/awesome-wm-widgets/volume-widget/icons/audio-volume-high-symbolic.svg",
+                resize = true,
+                widget = wibox.widget.imagebox,
+            },
+            valign = 'center',
+            layout = wibox.container.place
         },
         max_value = 100,
         thickness = 2,
         start_angle = 4.71238898, -- 2pi*3/4
-        forced_height = size,
-        forced_width = size,
+        forced_height = 18,
+        forced_width = 18,
         bg = '#ffffff11',
         paddings = 2,
         widget = wibox.container.arcchart,
-        set_volume_level = function(self, new_value)
-            self.value = new_value
-        end,
-        mute = function(self)
-            self.colors = { '#ff0000' }
-        end,
-        unmute = function(self)
-            self.colors = { beautiful.fg_color }
+        set_value = function(self, level)
+            self:set_value(level)
         end
     }
 
-end
-
-local function GET_VOLUME_CMD() return 'pamixer --get-volume' end
-
-local function INC_VOLUME_CMD() return 'pamixer -i 5 --set-limit 100' end
-
-local function DEC_VOLUME_CMD() return 'pamixer -d 5' end
-
-local function TOG_VOLUME_CMD() return 'pamixer -t' end
-
-local volume = {}
-
-local function worker(user_args)
-
-    local args = user_args or {}
-
-
-    volume.widget = widget.get_widget(args)
-
-
-    local function update_graphic(widget, stdout)
-        widget:set_volume_level(stdout)
+    local function show_mute_warning()
+        naughty.notify {
+            icon = notify_icon,
+            icon_size = 100,
+            text = 'some silence...',
+            title = 'Volume Is Muted',
+            timeout = 5,
+            hover_timeout = 0.5,
+            position = notify_position,
+            bg = "#1f1226",
+            fg = "#EEE9EF",
+            width = 400,
+        }
     end
 
-    function volume:inc()
-        spawn.easy_async(INC_VOLUME_CMD(), function(stdout) update_graphic(volume.widget, stdout) end)
+    local function show_unmute_warning()
+        naughty.notify {
+            icon = notify_icon,
+            icon_size = 100,
+            text = 'careful there...',
+            title = 'Volume Is Unmuted',
+            timeout = 5,
+            hover_timeout = 0.5,
+            position = notify_position,
+            bg = "#261217",
+            fg = "#EEE9EF",
+            width = 400,
+        }
     end
 
-    function volume:dec()
-        spawn.easy_async(DEC_VOLUME_CMD(), function(stdout) update_graphic(volume.widget, stdout) end)
+    local update_widget_color = function(widget)
+        spawn.easy_async(get_mute_status, function(mute_status)
+            if mute_status:gsub("%s+", "") == 'true' then
+                show_mute_warning()
+                widget.colors = { '##ffffff11' }
+            else
+                show_unmute_warning()
+                widget.colors = { beautiful.fg_color }
+            end
+        end)
     end
 
-    function volume:toggle()
-        spawn.easy_async(TOG_VOLUME_CMD(), function(stdout) update_graphic(volume.widget, stdout) end)
+    local update_widget = function(widget, out)
+        spawn.easy_async(get_mute_status, function(mute_status)
+            --show_battery_warning(out2)
+            if mute_status:gsub("%s+", "") == 'true' then
+                widget.colors = { '##ffffff11' }
+            else
+                widget.colors = { beautiful.fg_color }
+            end
+        end)
+        widget:set_value(out)
     end
 
-    function volume:mixer()
-        spawn.easy_async('pavucontrol')
+    function volume_widget:inc()
+        spawn.easy_async(inc_volume_cmd, function()
+            spawn.easy_async(get_volume_cmd, function(out)
+                update_widget(volume_widget.widget, out)
+            end)
+        end)
     end
 
-    volume.widget:buttons(
+    function volume_widget:dec()
+        spawn.easy_async(dec_volume_cmd, function()
+            spawn.easy_async(get_volume_cmd, function(out)
+                update_widget(volume_widget.widget, out)
+            end)
+        end)
+    end
+
+    function volume_widget:toggle()
+        spawn(tog_volume_cmd)
+        update_widget_color(volume_widget.widget)
+    end
+
+    function volume_widget:mixer()
+        spawn('pavucontrol')
+    end
+
+    volume_widget.widget:buttons(
         awful.util.table.join(
-            awful.button({}, 4, function() volume:inc() end),
-            awful.button({}, 5, function() volume:dec() end),
-            awful.button({}, 2, function() volume:mixer() end),
-            awful.button({}, 1, function() volume:toggle() end)
+            awful.button({}, 4, function() volume_widget:inc() end),
+            awful.button({}, 5, function() volume_widget:dec() end),
+            awful.button({}, 2, function() volume_widget:mixer() end),
+            awful.button({}, 1, function() volume_widget:toggle() end)
         )
     )
 
-    watch(GET_VOLUME_CMD(), 1, update_graphic, volume.widget)
+    watch(get_volume_cmd, 4, update_widget, volume_widget.widget)
 
-    return volume.widget
+    return volume_widget.widget
 end
 
-return setmetatable(volume, { __call = function(_, ...) return worker(...) end })
+return setmetatable(volume_widget, { __call = function(_, ...) return worker() end })

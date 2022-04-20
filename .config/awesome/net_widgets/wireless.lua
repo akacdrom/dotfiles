@@ -13,8 +13,8 @@ local function worker(args)
     local connected = false
 
     -- Settings
-    local interface      = "wlp2s0"
-    local widget         = args.widget == nil and wibox.layout.fixed.horizontal() or args.widget == false and nil or args.widget
+    local interface = "wlp2s0"
+    local widget    = args.widget == nil and wibox.layout.fixed.horizontal() or args.widget == false and nil or args.widget
 
     local net_icon = wibox.widget.imagebox()
     local signal_level = 0
@@ -50,8 +50,9 @@ local function worker(args)
         }
     end
 
+    local signal_level = 0
     local function net_update()
-        awful.spawn.easy_async("awk 'NR==3 {printf \"%3.0f\" ,($3/70)*100}' /proc/net/wireless", function(stdout, stderr, reason, exit_code)
+        awful.spawn.easy_async("awk 'NR==3 {printf \"%3.0f\" ,($3/70)*100}' /proc/net/wireless", function(stdout)
             signal_level = tonumber(stdout)
         end)
         if signal_level == nil then
@@ -73,6 +74,7 @@ local function worker(args)
     end
 
     net_update()
+    gears.timer.start_new( 10, function () net_update() return true end )
 
     widgets_table["imagebox"] = net_icon
     if widget then
