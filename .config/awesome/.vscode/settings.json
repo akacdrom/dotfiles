@@ -1,0 +1,9 @@
+{
+    "Lua.diagnostics.globals": [
+        "net_stats",
+        "widgets_table"
+    ],
+    "Lua.diagnostics.disable": [
+        "redefined-local"
+    ]
+}
