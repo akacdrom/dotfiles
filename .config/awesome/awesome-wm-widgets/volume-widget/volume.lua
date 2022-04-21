@@ -85,7 +85,6 @@ local function worker()
 
     local update_widget = function(widget, out)
         spawn.easy_async(get_mute_status, function(mute_status)
-            --show_battery_warning(out2)
             if mute_status:gsub("%s+", "") == 'true' then
                 widget.colors = { '##ffffff11' }
             else
