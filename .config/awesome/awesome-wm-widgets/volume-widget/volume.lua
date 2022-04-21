@@ -21,7 +21,7 @@ local function worker()
     volume_widget.widget = wibox.widget {
         {
             {
-                image = "/home/cd-r0m/.config/awesome/awesome-wm-widgets/volume-widget/icons/audio-volume-high-symbolic.svg",
+                image = "/home/cd-r0m/.config/awesome/awesome-wm-widgets/volume-widget/volume.svg",
                 resize = true,
                 widget = wibox.widget.imagebox,
             },
