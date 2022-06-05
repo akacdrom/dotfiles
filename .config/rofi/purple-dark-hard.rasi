@@ -17,16 +17,16 @@
     scrollbar: true;
 
     /* Gruvbox dark colors */
-    gruvbox-dark-bg0-hard:     #05050b;
-    gruvbox-dark-bg0:          #05050b;
-    gruvbox-dark-bg2:          #422363;
+    gruvbox-dark-bg0-hard:     #0F0E17;
+    gruvbox-dark-bg0:          #0F0E17;
+    gruvbox-dark-bg2:          #1E1C2E;
     gruvbox-dark-fg0:          #ffffff;
-    gruvbox-dark-fg1:          #d1d1d1;
+    gruvbox-dark-fg1:          #888888;
     gruvbox-dark-red-dark:     #cc241d;
     gruvbox-dark-red-light:    #fb4934;
     gruvbox-dark-yellow-dark:  #d79921;
     gruvbox-dark-yellow-light: #fabd2f;
-    gruvbox-dark-gray:         #561a91;
+    gruvbox-dark-gray:         #0F0E17;
 
     /* Theme colors */
     background:                  @gruvbox-dark-bg0-hard;
@@ -60,4 +60,55 @@
 
 @import "gruvbox-common.rasi"
 
-element-icon { size: 4.0ch ; }
+listview {
+    background-color:               @background-alt;
+    columns:                        2;
+    lines:                          5;
+    spacing:                        0%;
+    cycle:                          false;
+    dynamic:                        true;
+    layout:                         vertical;
+}
+
+mainbox {
+    background-color:               @background-alt;
+	border:							0% 0% 0% 0%;
+    border-radius:                  0% 0% 0% 0%;
+	border-color:					@accent;
+    children:                       [ inputbar, listview ];
+    spacing:                       	2%;
+    padding:                        2% 1% 2% 1%;
+}
+
+element {
+    background-color:               @background-alt;
+    text-color:                     @foreground;
+    orientation:                    vertical;
+    border-radius:                  0%;
+    padding:                        2% 0% 2% 0%;
+}
+element-icon {
+    background-color: 				inherit;
+    text-color:       				inherit;
+    horizontal-align:               0.5;
+    vertical-align:                 0.5;
+    size:                           48px;
+    border:                         0px;
+}
+
+element-text {
+    background-color: 				inherit;
+    text-color:       				inherit;
+    expand:                         true;
+    horizontal-align:               0.5;
+    vertical-align:                 0.5;
+    margin:                         0.5% 0.5% -0.5% 0.5%;
+}
+
+element selected {
+    background-color:               @background-bar;
+    text-color:                     @foreground;
+	border:							0% 0% 0% 0%;
+    border-radius:                  10px;
+    border-color:                  	@accent;
+}

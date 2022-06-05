@@ -6,7 +6,7 @@ from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 
 mod = "mod4"
-terminal = "alacritty"
+terminal = "kitty"
 
 keys = [
     # Switch between windows
@@ -53,7 +53,7 @@ keys = [
     Key([mod, "control"], "p", lazy.shutdown(), desc="Shutdown Qtile"),
 
     # Personal keys
-    Key([mod], "Return", lazy.spawn("alacritty"), desc="Launch terminal"),
+    Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
     Key([mod], "e", lazy.spawn("pcmanfm"), desc="Launch pcmanfm"),
     Key([mod], "q", lazy.spawn("rofi -show combi"), desc="Launch rofi"),
     Key([mod], "F12", lazy.spawn("bash /home/cd-r0m/.scripts/vol-not.sh up"), desc="Audio inc"),
@@ -85,8 +85,8 @@ for i in groups:
         #     desc="move focused window to group {}".format(i.name)),
     ])
 #groups.extend([
-    #        Group('1', spawn='google-chrome-stable', persist=True, matches=[Match(wm_class=['google-chrome'])]),
-    #   ])
+    #           Group('1', spawn='google-chrome-stable', persist=True, matches=[Match(wm_class=['google-chrome'])]),
+    #  ])
 
 layout_theme = {"border_width": 1,
                 "margin": 1,
@@ -177,28 +177,14 @@ screens = [
                     foreground = "#ffffff",
                     fontsize=13
                     ),
-                widget.CheckUpdates(
-                    custom_command = "checkupdates",
-                    display_format = " {updates}",
-                    no_update_string = " ",
-                    execute = "alacritty --hold -t 'UPDATE MANAGER' -e paru --noconfirm --needed -Syu",
-                    colour_have_updates = "#bdbdbd",
-                    colour_no_updates = "#bdbdbd"
-
-                    ),
                 widget.Battery(
-                    format = '|[{char} {percent:2.0%}]',
+                    format = '|[{char} {percent:2.0%}]|',
                     charge_char = '',
                     discharge_char = '',
                     full_char = '',
                     show_short_text = False,
                     hide_threshold = .99,
                     foreground = '#ff2b4d',
-                    ),
-                widget.TextBox(
-                    text = "|",
-                    foreground = "#ffffff",
-                    fontsize=13
                     ),
                 widget.Backlight(
                         fmt = ' {}',
@@ -226,29 +212,6 @@ screens = [
                     foreground = "#ffffff",
                     fontsize=13
                     ),
-                widget.TextBox(
-                    text = " ",
-                    fontsize = 14
-                    ),
-                widget.Memory(
-                    format = '{MemUsed:.1f}{mm}',
-                    mouse_callbacks = {'Button1': lazy.spawn("alacritty --hold -t 'TASK MANAGER' -e bpytop")},
-                    measure_mem = 'G'
-                        ),
-                widget.TextBox(
-                    text = "|",
-                    foreground = "#ffffff",
-                    fontsize=13
-                    ),
-                widget.CPU(
-                    format = ' {load_percent}%',
-                    mouse_callbacks = {'Button1': lazy.spawn("alacritty --hold -t 'TASK MANAGER' -e bpytop")},
-                    ),
-                widget.TextBox(
-                    text = "|",
-                    foreground = "#ffffff",
-                    fontsize=13
-                    ),
                 widget.Wlan(
                     interface="wlp2s0",
                     format=" ",
@@ -266,20 +229,6 @@ screens = [
                     hci = "/dev_60_AA_EF_5B_6D_BC",
                     mouse_callbacks = {'Button1': lazy.spawn("/home/cd-r0m/.scripts/rofi-bluetooth.sh")}
                     ),
-                widget.TextBox(
-                    text = "|",
-                    foreground = "#ffffff",
-                    fontsize=13
-                    ),
-                widget.TextBox(
-                    text = " ",
-                    mouse_callbacks = {'Button1': lazy.spawn("alacritty --hold -t '📅 GOOGLE CALENDAR' -e gcalcli calm")},
-                    fontsize = 15
-                    ),
-                widget.Clock(
-                    format='%d-%a-%b',
-                    mouse_callbacks = {'Button1': lazy.spawn("alacritty --hold -t '📅 GOOGLE CALENDAR' -e gcalcli calm")},
-                ),
                 widget.TextBox(
                     text = "|",
                     foreground = "#ffffff",

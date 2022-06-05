@@ -101,7 +101,8 @@ bindkey \^U backward-kill-line
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-alias 4i="bluetoothctl power on && bluetoothctl connect 60:AA:EF:5B:6D:BC && notify-send -i /usr/share/icons/Papirus/32x32/devices/audio-headphones.svg 'FreeBuds 4i is connected !' -t 2000"
+alias wif="nmcli device wifi connect NETIASPOT-D765E0 password j3jho3bwuumm"
+alias 4i="sudo systemctl restart bluetooth && bluetoothctl power on && bluetoothctl connect 60:AA:EF:5B:6D:BC && notify-send -i /usr/share/icons/Papirus/32x32/devices/audio-headphones.svg 'FreeBuds 4i is connected !' -t 2000"
 alias 4id="bluetoothctl disconnect 60:AA:EF:5B:6D:BC && bluetoothctl power off && notify-send -i /usr/share/icons/ePapirus/24x24/panel/audio-volume-muted-headphones-symbolic.svg 'FreeBuds 4i is disconnected !' -t 2000"
 alias clean="sudo pacman -Qttdq | sudo pacman -Rns -"
 alias v="nvim"

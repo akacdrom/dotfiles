@@ -35,18 +35,12 @@ fi
 xrandr --setprovideroutputsource modesetting NVIDIA-0
 xrandr --auto
 
-feh --bg-fill /home/cd-r0m/Pictures/wallpapers/çin.png &
-picom &
-brightnessctl s 100% &
-setxkbmap -layout tr &
-/usr/bin/dunst &
-/usr/bin/lxpolkit &
-numlockx &
-xset s 0 0 &
-xset dpms 0 0 0 &
-greenclip daemon &
-
 export QT_QPA_PLATFORMTHEME=qt5ct
 
 #exec qtile start
 exec awesome
+
+#export XDG_SESSION_TYPE=x11
+#export GDK_BACKEND=x11
+#exec gnome-session
+
