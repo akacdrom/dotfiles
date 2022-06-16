@@ -26,16 +26,17 @@ local function worker()
     local a = "";
     local art = default_art;
     local p_n = "";
+    local al = "";
 
     playerctl:connect_signal("metadata",
         function(_, title, artist, album_path, album, new, player_name)
             -- Set art widget
-            art = (gears.surface.load_uncached(album_path))
-
+            art = gears.surface.load_uncached(album_path)
             -- Set player name, title and artist widgets
-            p_n = (player_name)
-            t = (title)
-            a = (artist)
+            p_n = player_name
+            t = title
+            a = artist
+            al = " • " .. album
         end)
 
     local notification = nil
@@ -55,7 +56,7 @@ local function worker()
 
         notification = naughty.notify({
             icon_size = dpi(150),
-            title     = "[" .. p_n .. "]" .. "\n\n" .. t .. "\n\n" .. "[" .. a .. "]",
+            title     = "[" .. p_n .. "]" .. "\n\n" .. t .. al .. "\n\n" .. "[" .. a .. "]",
             icon      = art,
             font      = "Jetbrains Mono Extra Bold Nerd Font 10",
             position  = "bottom_right"

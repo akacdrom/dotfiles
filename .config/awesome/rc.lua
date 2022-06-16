@@ -313,7 +313,7 @@ screen.connect_signal("request::desktop_decoration", function(s)
             shape = gears.shape.rounded_bar,
             shape_border_width = 4,
             shape_border_color = '#000000',
-            align = "center"
+            --align = "center"
         },
         layout          = {
             spacing         = 10,
@@ -323,8 +323,8 @@ screen.connect_signal("request::desktop_decoration", function(s)
                     shape        = gears.shape.circle,
                     widget       = wibox.widget.separator
                 },
-                valign = "center",
-                halign = "center",
+                -- valign = "center",
+                -- halign = "center",
                 widget = wibox.container.place,
             },
             max_widget_size = awful.screen.focused().workarea.width * 0.40,
@@ -382,8 +382,8 @@ screen.connect_signal("request::desktop_decoration", function(s)
             wibox.container.margin(s.mytasklist, 0, 0, 0, 0), -- Middle widget
             { -- Right widgets
                 layout = wibox.layout.fixed.horizontal,
-                wibox.container.margin(wibox.widget.systray(), 0,0,4,4),
-                wibox.container.margin(playerctl_widget(), 5,0,0,0),
+                wibox.container.margin(wibox.widget.systray(), 0, 0, 4, 4),
+                wibox.container.margin(playerctl_widget(), 5, 0, 0, 0),
                 wibox.container.margin(brightness_widget(), 5, 5, 0, 0),
                 batteryarc_widget(),
                 wibox.container.margin(volume_widget(), 5, 5, 0, 0),
