@@ -132,7 +132,8 @@ local function worker()
             icon_size = dpi(150),
             title     = getBattInfo(),
             icon      = "/home/cd-r0m/.config/awesome/themes/default/icons/battery.png",
-            font      = "Jetbrains Mono Extra Bold Nerd Font 11"
+            font      = "Jetbrains Mono Extra Bold Nerd Font 11",
+            position  = "bottom_right",
         })
     end
 

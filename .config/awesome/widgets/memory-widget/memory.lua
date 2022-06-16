@@ -92,13 +92,15 @@ local function worker()
             icon      = "/home/cd-r0m/.config/awesome/widgets/memory-widget/memory.png",
             icon_size = dpi(150),
             title     = getMemInfo(),
-            font      = "Jetbrains Mono Extra Bold Nerd Font 11"
+            font      = "Jetbrains Mono Extra Bold Nerd Font 11",
+            position  = "bottom_right",
         })
         notification_swap = naughty.notify({
             icon      = "/home/cd-r0m/.config/awesome/widgets/memory-widget/swap.png",
             icon_size = dpi(150),
             title     = getSwapInfo(),
-            font      = "Jetbrains Mono Extra Bold Nerd Font 11"
+            font      = "Jetbrains Mono Extra Bold Nerd Font 11",
+            position  = "bottom_right",
         })
     end
 

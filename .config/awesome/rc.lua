@@ -30,6 +30,8 @@ local net_widgets = require("widgets.wireless-widget.wireless")
 local memory_widget = require("widgets.memory-widget.memory")
 --CPU widget
 local cpu_widget = require("widgets.cpu-widget.cpu")
+--Playerctl widget
+local playerctl_widget = require("widgets.playerctl-widget.player")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -380,7 +382,8 @@ screen.connect_signal("request::desktop_decoration", function(s)
             wibox.container.margin(s.mytasklist, 0, 0, 0, 0), -- Middle widget
             { -- Right widgets
                 layout = wibox.layout.fixed.horizontal,
-                wibox.widget.systray(),
+                wibox.container.margin(wibox.widget.systray(), 0,0,4,4),
+                wibox.container.margin(playerctl_widget(), 5,0,0,0),
                 wibox.container.margin(brightness_widget(), 5, 5, 0, 0),
                 batteryarc_widget(),
                 wibox.container.margin(volume_widget(), 5, 5, 0, 0),
@@ -499,13 +502,16 @@ awful.keyboard.append_global_keybindings({
             icon = "/usr/share/icons/Papirus-Dark/48x48/devices/audio-headphones.svg"
             text = "Huawei 4i Earpods Using"
         end
+        naughty.config.padding = dpi(100)
         naughty.notify {
             icon = icon,
             title = "Volume: " .. volume .. "%",
             text = text,
             timeout = 2, -- show the warning for a longer time
             hover_timeout = 1,
+            position = "bottom_middle",
         }
+        naughty.config.padding = dpi(15)
     end,
         { description = "increase volume", group = "launcher" }),
     awful.key({ modkey, }, "F11", function()
@@ -523,13 +529,16 @@ awful.keyboard.append_global_keybindings({
             icon = "/usr/share/icons/Papirus-Dark/48x48/devices/audio-headphones.svg"
             text = "Huawei 4i Earpods Using"
         end
+        naughty.config.padding = dpi(100)
         naughty.notify {
             icon = icon,
             title = "Volume: " .. volume .. "%",
             text = text,
             timeout = 2, -- show the warning for a longer time
             hover_timeout = 1,
+            position = "bottom_middle",
         }
+        naughty.config.padding = dpi(15)
     end,
         { description = "decrease volume", group = "launcher" }),
     awful.key({ modkey, }, "F10", function() awful.spawn("pamixer -t") end,
@@ -553,12 +562,15 @@ awful.keyboard.append_global_keybindings({
         f = io.popen('bash -c "brightnessctl -m | cut -d, -f4 | tr -d %"')
         brightness = f:read("n")
         local icon = "/home/cd-r0m/.config/awesome/themes/default/icons/brightness.png"
+        naughty.config.padding = dpi(100)
         naughty.notify {
             icon = icon,
             title = "Brightness: " .. brightness .. "%",
             timeout = 2, -- show the warning for a longer time
             hover_timeout = 1,
+            position = "bottom_middle",
         }
+        naughty.config.padding = dpi(15)
     end,
         { description = "decrease brightness", group = "launcher" }),
     awful.key({ modkey, }, "F6", function()
@@ -568,12 +580,15 @@ awful.keyboard.append_global_keybindings({
         f = io.popen('bash -c "brightnessctl -m | cut -d, -f4 | tr -d %"')
         brightness = f:read("n")
         local icon = "/home/cd-r0m/.config/awesome/themes/default/icons/brightness.png"
+        naughty.config.padding = dpi(100)
         naughty.notify {
             icon = icon,
             title = "Brightness: " .. brightness .. "%",
             timeout = 2, -- show the warning for a longer time
             hover_timeout = 1,
+            position = "bottom_middle",
         }
+        naughty.config.padding = dpi(15)
     end,
         { description = "increase brightness", group = "launcher" }),
 })

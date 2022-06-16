@@ -97,7 +97,8 @@ local function worker()
             icon      = "/home/cd-r0m/.config/awesome/themes/default/icons/disco-light.png",
             icon_size = dpi(150),
             title     = get_bright_info(),
-            font      = "Jetbrains Mono Extra Bold Nerd Font 11"
+            font      = "Jetbrains Mono Extra Bold Nerd Font 11",
+            position  = "bottom_right",
         })
 
     end

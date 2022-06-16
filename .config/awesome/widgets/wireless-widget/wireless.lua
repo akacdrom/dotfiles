@@ -189,7 +189,8 @@ local function worker()
             icon_size = dpi(150),
             title     = text_grabber(),
             icon      = notify_icon,
-            font      = "Jetbrains Mono Extra Bold Nerd Font 11"
+            font      = "Jetbrains Mono Extra Bold Nerd Font 11",
+            position  = "bottom_right",
         })
     end
 
