@@ -57,7 +57,6 @@ bling.module.flash_focus.enable()
 --BLING - Window Switcher
 bling.widget.window_switcher.enable {
     type = "thumbnail", -- set to anything other than "thumbnail" to disable client previews
-
     -- keybindings (the examples provided are also the default if kept unset)
     hide_window_switcher_key = "Escape", -- The key on which to close the popup
     minimize_key = "n", -- The key on which to minimize the selected client
@@ -72,14 +71,12 @@ bling.widget.window_switcher.enable {
 
 --BLING - Window preview
 bling.widget.task_preview.enable {
-    x = 20, -- The x-coord of the popup
-    y = 20, -- The y-coord of the popup
-    height = 380, -- The height of the popup
-    width = 380, -- The width of the popup
+    height = 450, -- The height of the popup
+    width = 450, -- The width of the popup
     placement_fn = function(c) -- Place the widget using awful.placement (this overrides x & y)
         awful.placement.bottom(c, {
             margins = {
-                bottom = 30
+                bottom = dpi(44)
             }
         })
     end
@@ -87,17 +84,15 @@ bling.widget.task_preview.enable {
 
 --BLING - Tag preview
 bling.widget.tag_preview.enable {
-    show_client_content = false, -- Whether or not to show the client content
-    x = 10, -- The x-coord of the popup
-    y = 10, -- The y-coord of the popup
-    scale = 0.25, -- The scale of the previews compared to the screen
-    honor_padding = false, -- Honor padding when creating widget size
-    honor_workarea = false, -- Honor work area when creating widget size
+    show_client_content = true, -- Whether or not to show the client content
+    scale = 0.30, -- The scale of the previews compared to the screen
+    honor_padding = true, -- Honor padding when creating widget size
+    honor_workarea = true, -- Honor work area when creating widget size
     placement_fn = function(c) -- Place the widget using awful.placement (this overrides x & y)
         awful.placement.bottom_left(c, {
             margins = {
-                bottom = 30,
-                left = 15
+                bottom = dpi(44),
+                left = dpi(15)
             }
         })
     end,
@@ -223,6 +218,9 @@ screen.connect_signal("request::desktop_decoration", function(s)
         }
     }
     -- Create a taglist widget
+    local taglist_shape = function(cr, width, height, radius)
+        gears.shape.transform(gears.shape.rounded_rect):translate(0, 0)(cr, width, height, 8)
+    end
     s.mytaglist = awful.widget.taglist {
         screen          = s,
         filter          = awful.widget.taglist.filter.all,
@@ -245,31 +243,10 @@ screen.connect_signal("request::desktop_decoration", function(s)
         widget_template = {
             {
                 {
-                    {
-                        {
-                            {
-                                id     = 'index_role',
-                                widget = wibox.widget.textbox,
-                            },
-                            widget = wibox.container.margin,
-                        },
-                        widget = wibox.container.background,
-                    },
-                    {
-                        {
-                            id     = 'icon_role',
-                            widget = wibox.widget.imagebox,
-                        },
-                        widget = wibox.container.margin,
-                    },
-                    {
-                        id     = 'text_role',
-                        widget = wibox.widget.textbox,
-
-                    },
-                    layout = wibox.layout.fixed.horizontal,
+                    id     = 'index_role',
+                    widget = wibox.widget.textbox,
                 },
-                widget = wibox.container.margin
+                widget = wibox.container.margin,
             },
             id              = 'background_role',
             widget          = wibox.container.background,
@@ -296,7 +273,21 @@ screen.connect_signal("request::desktop_decoration", function(s)
             end,
         },
     }
-
+    local new_tag_list = wibox.widget {
+        {
+            { widget = s.mytaglist },
+            left = 15,
+            right = 15,
+            top = 4,
+            bottom = 4,
+            widget = wibox.container.margin
+        },
+        bg = beautiful.bg_normal,
+        shape_border_width = 4,
+        border_color = "#000000",
+        shape = taglist_shape,
+        widget = wibox.container.background,
+    }
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist {
         screen          = s,
@@ -310,25 +301,15 @@ screen.connect_signal("request::desktop_decoration", function(s)
             awful.button({}, 5, function() awful.client.focus.byidx(1) end),
         },
         style           = {
-            shape = gears.shape.rounded_bar,
-            shape_border_width = 4,
+            shape = gears.shape.rounded_rect,
+            shape_border_width = 2,
             shape_border_color = '#000000',
-            --align = "center"
+            align = "center"
         },
         layout          = {
-            spacing         = 10,
-            spacing_widget  = {
-                {
-                    forced_width = 5,
-                    shape        = gears.shape.circle,
-                    widget       = wibox.widget.separator
-                },
-                -- valign = "center",
-                -- halign = "center",
-                widget = wibox.container.place,
-            },
-            max_widget_size = awful.screen.focused().workarea.width * 0.40,
-            layout          = wibox.layout.flex.horizontal
+            spacing = 2,
+            --max_widget_size = awful.screen.focused().workarea.width * 0.40,
+            layout  = wibox.layout.flex.horizontal
         },
         widget_template = {
             {
@@ -341,14 +322,14 @@ screen.connect_signal("request::desktop_decoration", function(s)
                         margins = 5,
                         widget  = wibox.container.margin,
                     },
-                    {
-                        id     = "text_role",
-                        widget = wibox.widget.textbox,
-                    },
+                    --     {
+                    --         id     = "text_role",
+                    --         widget = wibox.widget.textbox,
+                    --     },
                     layout = wibox.layout.align.horizontal,
                 },
                 left   = 10,
-                right  = 15,
+                right  = 10,
                 widget = wibox.container.margin
             },
             id              = "background_role",
@@ -371,13 +352,13 @@ screen.connect_signal("request::desktop_decoration", function(s)
     s.mywibox = awful.wibar {
         position = "bottom",
         screen   = s,
-        height   = 22,
+        height   = 30,
         widget   = {
             layout = wibox.layout.align.horizontal,
             expand = "none",
             { -- Left widgets
                 layout = wibox.layout.fixed.horizontal,
-                wibox.container.margin(s.mytaglist, 0, 0, 0, 0),
+                wibox.container.margin(new_tag_list, 0, 0, 0, 0),
             },
             wibox.container.margin(s.mytasklist, 0, 0, 0, 0), -- Middle widget
             { -- Right widgets
@@ -391,7 +372,7 @@ screen.connect_signal("request::desktop_decoration", function(s)
                 wibox.container.margin(memory_widget(), 5, 0, 0, 0),
                 wibox.container.margin(cpu_widget(), 5, 0, 0, 0),
                 wibox.container.margin(mytextclock, 5, 5, 0, 0),
-                wibox.container.margin(s.mylayoutbox, 0, 0, 3, 3)
+                wibox.container.margin(s.mylayoutbox, 0, 0, 7, 7)
             },
         }
     }

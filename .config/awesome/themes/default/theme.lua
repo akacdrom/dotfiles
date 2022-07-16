@@ -65,10 +65,6 @@ theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(
 -- wallpaper
 theme.wallpaper = "/home/cd-r0m/Pictures/wallpapers/city.jpg"
 
--- flash focus
-theme.flash_focus_start_opacity = 0.7 -- the starting opacity
-theme.flash_focus_step = 0.01 -- the step of animation
-
 -- window switcher
 theme.window_switcher_widget_bg = theme.bg_normal -- The bg color of the widget
 theme.window_switcher_widget_border_width = 0 -- The border width of the widget

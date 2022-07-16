@@ -8,7 +8,7 @@ local wireless_widget = {}
 
 local function worker()
     local connected      = false
-    local interface      = "wlp2s0"
+    local interface      = "wlan0"
     local icon           = "/home/cd-r0m/.config/awesome/widgets/wireless-widget/wifi.png"
     local no_wifi_icon   = "/home/cd-r0m/.config/awesome/widgets/wireless-widget/no-wifi.png"
     local get_signal_cmd = "awk 'NR==3 {printf \"%.0f\" ,($3/70)*100}' /proc/net/wireless"

@@ -53,28 +53,29 @@ local function draw_widget(
         (widget_template or {
             {
                 {
-                    -- {
-                    --     {
-                    --         id = "icon_role",
-                    --         resize = true,
-                    --         forced_height = dpi(35),
-                    --         forced_width = dpi(35),
-                    --         widget = wibox.widget.imagebox,
-                    --         halign = "center",
-                    --     },
-                    --     -- {
-                    --     --     {
-                    --     --         id = "name_role",
-                    --     --         align = "center",
-                    --     --         widget = wibox.widget.textbox,
-                    --     --     },
-                    --     --     left = dpi(4),
-                    --     --     right = dpi(4),
-                    --     --     widget = wibox.container.margin,
-                    --     -- },
-                    --     expand = "outside",
-                    --     layout = wibox.layout.align.horizontal,
-                    -- },
+                    {
+                        --  {
+                        --      id = "icon_role",
+                        --      resize = true,
+                        --      forced_height = dpi(35),
+                        --      forced_width = dpi(35),
+                        --      widget = wibox.widget.imagebox,
+                        --      halign = "center",
+                        --  },
+                        {
+                            {
+                                id = "name_role",
+                                align = "center",
+                                font = "noto display medium 9",
+                                widget = wibox.widget.textbox,
+                            },
+                            left = dpi(4),
+                            right = dpi(4),
+                            widget = wibox.container.margin,
+                        },
+                        expand = "outside",
+                        layout = wibox.layout.align.horizontal,
+                    },
                     {
                         {
                             {
@@ -87,7 +88,7 @@ local function draw_widget(
                             halign = "center",
                             widget = wibox.container.place,
                         },
-                        top = 0,
+                        top = dpi(10),
                         widget = wibox.container.margin,
                     },
                     fill_space = true,
@@ -113,9 +114,9 @@ local function draw_widget(
         w.image = img -- TODO: copy it with gears.surface.xxx or something
     end
 
-    -- for _, w in ipairs(widget:get_children_by_id("name_role")) do
-    --     w.text = c.name
-    -- end
+    for _, w in ipairs(widget:get_children_by_id("name_role")) do
+        w.text = c.name
+    end
 
     -- for _, w in ipairs(widget:get_children_by_id("icon_role")) do
     --     w.image = c.icon -- TODO: detect clienticon

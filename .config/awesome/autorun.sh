@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 if ! pgrep -f "chrome" ;
 then
-  google-chrome-stable &
+  google-chrome-stable --profile-directory=Default --app-id=cinhimbnkkaeohfgghhklpknlkffjgod &
   picom --experimental-backends &
   /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
   greenclip daemon &
@@ -11,4 +11,6 @@ then
   setxkbmap -layout tr
   #brightnessctl s 100% &
   #feh --bg-fill ~/Pictures/wallpapers/forest.png
+  sleep 3
+  google-chrome-stable &
 fi
