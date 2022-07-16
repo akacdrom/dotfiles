@@ -2,7 +2,7 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/home/cd-r0m/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -23,14 +23,13 @@ ZSH_THEME="af-magic"
 # Case-sensitive completion must be off. _ and - will be interchangeable.
 # HYPHEN_INSENSITIVE="true"
 
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to automatically update without prompting.
-# DISABLE_UPDATE_PROMPT="true"
+# Uncomment one of the following lines to change the auto-update behavior
+# zstyle ':omz:update' mode disabled  # disable automatic updates
+# zstyle ':omz:update' mode auto      # update automatically without asking
+# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 
 # Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
+# zstyle ':omz:update' frequency 13
 
 # Uncomment the following line if pasting URLs and other text is messed up.
 # DISABLE_MAGIC_FUNCTIONS="true"
@@ -45,8 +44,9 @@ ZSH_THEME="af-magic"
 # ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
-# Caution: this setting can cause issues with multiline prompts (zsh 5.7.1 and newer seem to work)
-# See https://github.com/ohmyzsh/ohmyzsh/issues/5765
+# You can also set it to another string to have that shown instead of the default red dots.
+# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
+# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
 # COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
@@ -95,21 +95,21 @@ source $ZSH/oh-my-zsh.sh
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
-bindkey \^U backward-kill-line
+#
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 alias wif="nmcli device wifi connect NETIASPOT-D765E0 password j3jho3bwuumm"
+alias wifd="nmcli device disconnect wlan0"
 alias 4i="sudo systemctl restart bluetooth && bluetoothctl power on && bluetoothctl connect 60:AA:EF:5B:6D:BC && notify-send -i /usr/share/icons/Papirus/32x32/devices/audio-headphones.svg 'FreeBuds 4i is connected !' -t 2000"
 alias 4id="bluetoothctl disconnect 60:AA:EF:5B:6D:BC && bluetoothctl power off && notify-send -i /usr/share/icons/ePapirus/24x24/panel/audio-volume-muted-headphones-symbolic.svg 'FreeBuds 4i is disconnected !' -t 2000"
 alias clean="sudo pacman -Qttdq | sudo pacman -Rns -"
-alias v="nvim"
+alias v="vim"
 alias cat="bat --theme=base16"
 alias ls="exa --icons --group-directories-first"
 alias ll="exa -lgh --icons --group-directories-first"
 alias l="exa -lgha --icons --group-directories-first"
 alias la="exa -lgha --icons --group-directories-first"
 alias fd="fd -Hi"
-eval $(thefuck --alias)
