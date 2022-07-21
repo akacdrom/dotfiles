@@ -30,8 +30,6 @@ local net_widgets = require("widgets.wireless-widget.wireless")
 local memory_widget = require("widgets.memory-widget.memory")
 --CPU widget
 local cpu_widget = require("widgets.cpu-widget.cpu")
---Playerctl widget
-local playerctl_widget = require("widgets.playerctl-widget.player")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -47,62 +45,6 @@ end)
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init("~/.config/awesome/themes/default/theme.lua")
-
---BLING
-local bling = require("bling")
-
---BLING - FLASH FOCUS
-bling.module.flash_focus.enable()
-
---BLING - Window Switcher
-bling.widget.window_switcher.enable {
-    type = "thumbnail", -- set to anything other than "thumbnail" to disable client previews
-    -- keybindings (the examples provided are also the default if kept unset)
-    hide_window_switcher_key = "Escape", -- The key on which to close the popup
-    minimize_key = "n", -- The key on which to minimize the selected client
-    unminimize_key = "N", -- The key on which to unminimize all clients
-    kill_client_key = "q", -- The key on which to close the selected client
-    cycle_key = "Tab", -- The key on which to cycle through all clients
-    previous_key = "Right", -- The key on which to select the previous client
-    next_key = "Left", -- The key on which to select the next client
-    vim_previous_key = "l", -- Alternative key on which to select the previous client
-    vim_next_key = "h", -- Alternative key on which to select the next client
-}
-
---BLING - Window preview
-bling.widget.task_preview.enable {
-    height = 450, -- The height of the popup
-    width = 450, -- The width of the popup
-    placement_fn = function(c) -- Place the widget using awful.placement (this overrides x & y)
-        awful.placement.bottom(c, {
-            margins = {
-                bottom = dpi(44)
-            }
-        })
-    end
-}
-
---BLING - Tag preview
-bling.widget.tag_preview.enable {
-    show_client_content = true, -- Whether or not to show the client content
-    scale = 0.30, -- The scale of the previews compared to the screen
-    honor_padding = true, -- Honor padding when creating widget size
-    honor_workarea = true, -- Honor work area when creating widget size
-    placement_fn = function(c) -- Place the widget using awful.placement (this overrides x & y)
-        awful.placement.bottom_left(c, {
-            margins = {
-                bottom = dpi(44),
-                left = dpi(15)
-            }
-        })
-    end,
-    background_widget = wibox.widget { -- Set a background image (like a wallpaper) for the widget
-        image                 = beautiful.wallpaper,
-        horizontal_fit_policy = "fit",
-        vertical_fit_policy   = "fit",
-        widget                = wibox.widget.imagebox
-    }
-}
 
 -- This is used later as the default terminal and editor to run.
 local terminal = "alacritty"
@@ -120,7 +62,6 @@ tag.connect_signal("request::default_layouts", function()
         awful.layout.suit.tile,
         awful.layout.suit.floating,
         awful.layout.suit.max,
-
     })
 end)
 -- }}}
@@ -199,6 +140,7 @@ local month_calendar = awful.widget.calendar_popup.month(
                 gears.shape.rounded_rect(cr, width, height, 10)
             end
         },
+        screen        = awful.screen.focused()
     }
 )
 month_calendar:attach(mytextclock, "br")
@@ -253,20 +195,6 @@ screen.connect_signal("request::desktop_decoration", function(s)
             -- Add support for hover colors and an index label
             create_callback = function(self, c3, index, objects) --luacheck: no unused args
                 self:get_children_by_id('index_role')[1].markup = '<b> ' .. index .. ' </b>'
-                self:connect_signal('mouse::enter', function()
-
-                    -- BLING: Only show widget when there are clients in the tag
-                    if #c3:clients() > 0 then
-                        -- BLING: Update the widget with the new tag
-                        awesome.emit_signal("bling::tag_preview::update", c3)
-                        -- BLING: Show the widget
-                        awesome.emit_signal("bling::tag_preview::visibility", s, true)
-                    end
-                end)
-                self:connect_signal('mouse::leave', function()
-                    -- BLING: Turn the widget off
-                    awesome.emit_signal("bling::tag_preview::visibility", s, false)
-                end)
             end,
             update_callback = function(self, c3, index, objects) --luacheck: no unused args
                 self:get_children_by_id('index_role')[1].markup = '<b> ' .. index .. ' </b>'
@@ -322,29 +250,18 @@ screen.connect_signal("request::desktop_decoration", function(s)
                         margins = 5,
                         widget  = wibox.container.margin,
                     },
-                    --     {
-                    --         id     = "text_role",
-                    --         widget = wibox.widget.textbox,
-                    --     },
+                    {
+                        id     = "text_role",
+                        widget = wibox.widget.textbox,
+                    },
                     layout = wibox.layout.align.horizontal,
                 },
                 left   = 10,
                 right  = 10,
                 widget = wibox.container.margin
             },
-            id              = "background_role",
-            widget          = wibox.container.background,
-            --callback for the BLINK window preview
-            create_callback = function(self, c, index, objects)
-                self:connect_signal('mouse::enter', function()
-                    awesome.emit_signal("bling::task_preview::visibility", s,
-                        true, c)
-                end)
-                self:connect_signal('mouse::leave', function()
-                    awesome.emit_signal("bling::task_preview::visibility", s,
-                        false, c)
-                end)
-            end
+            id     = "background_role",
+            widget = wibox.container.background,
         }
 
     }
@@ -364,7 +281,6 @@ screen.connect_signal("request::desktop_decoration", function(s)
             { -- Right widgets
                 layout = wibox.layout.fixed.horizontal,
                 wibox.container.margin(wibox.widget.systray(), 0, 0, 4, 4),
-                wibox.container.margin(playerctl_widget(), 5, 0, 0, 0),
                 wibox.container.margin(brightness_widget(), 5, 5, 0, 0),
                 batteryarc_widget(),
                 wibox.container.margin(volume_widget(), 5, 5, 0, 0),
@@ -404,8 +320,7 @@ awful.keyboard.append_global_keybindings({
 awful.keyboard.append_global_keybindings({
     awful.key({ "Mod1", }, "Tab",
         function()
-            --awful.client.focus.byidx(1)
-            awesome.emit_signal("bling::window_switcher::turn_on")
+            awful.client.focus.byidx(1)
         end,
         { description = "focus next by index", group = "client" }
     ),
@@ -421,6 +336,10 @@ awful.keyboard.append_global_keybindings({
         end,
         { description = "focus previous by index", group = "client" }
     ),
+    awful.key({ modkey, "Control" }, "Right", function() awful.screen.focus_relative(1) end,
+        { description = "focus the next screen", group = "screen" }),
+    awful.key({ modkey, "Control" }, "Left", function() awful.screen.focus_relative(-1) end,
+        { description = "focus the previous screen", group = "screen" }),
     awful.key({ modkey, "Control" }, "n",
         function()
             local c = awful.client.restore()
@@ -744,10 +663,10 @@ ruled.client.connect_signal("request::rules", function()
     }
 
     -- Set Chrome to always map on the tag named "1" on screen 1.
-    -- ruled.client.append_rule {
-    --     rule       = { class = "Google-chrome" },
-    --     properties = { screen = 1, tag = 1}
-    -- }
+    --ruled.client.append_rule {
+    --    rule       = { class = "Google-chrome" },
+    --    properties = { tag = screen[1].tags[4] }
+    --}
 end)
 
 -- }}}

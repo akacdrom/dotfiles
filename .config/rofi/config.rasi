@@ -1,6 +1,6 @@
 configuration {
 	modi: "drun,run,filebrowser,window,combi";
-	font: "JetbrainsMono Nerd Font Bold 10";
+	font: "JetbrainsMono Nerd Font Bold 12";
 /*	location: 0;*/
 /*	yoffset: 0;*/
 /*	xoffset: 0;*/

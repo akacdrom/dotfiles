@@ -213,7 +213,7 @@ screens = [
                     fontsize=13
                     ),
                 widget.Wlan(
-                    interface="wlp2s0",
+                    interface="wlan0",
                     format=" ",
                     disconnected_message="[OFFLINE]",
                     mouse_callbacks = {'Button1': lazy.spawn("/home/cd-r0m/.scripts/rofi-wifi-menu.sh")},
