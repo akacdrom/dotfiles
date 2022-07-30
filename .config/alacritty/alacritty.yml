@@ -4,6 +4,9 @@ env:
   LC_CTYPE: en_US.UTF-8
 
 window:
+  dimensions:
+    columns: 133
+    lines: 40
   dynamic_padding: true
   dynamic_title: true
 

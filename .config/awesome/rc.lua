@@ -59,8 +59,8 @@ local modkey = "Mod4"
 -- Table of layouts to cover with awful.layout.inc, order matters.
 tag.connect_signal("request::default_layouts", function()
     awful.layout.append_default_layouts({
-        awful.layout.suit.tile,
         awful.layout.suit.floating,
+        awful.layout.suit.tile,
         awful.layout.suit.max,
     })
 end)
@@ -140,7 +140,7 @@ local month_calendar = awful.widget.calendar_popup.month(
                 gears.shape.rounded_rect(cr, width, height, 10)
             end
         },
-        screen        = awful.screen.focused()
+        screen        = awful.screen.primary
     }
 )
 month_calendar:attach(mytextclock, "br")
@@ -236,7 +236,7 @@ screen.connect_signal("request::desktop_decoration", function(s)
         },
         layout          = {
             spacing = 2,
-            --max_widget_size = awful.screen.focused().workarea.width * 0.40,
+            max_widget_size = awful.screen.focused().workarea.width * 0.40,
             layout  = wibox.layout.flex.horizontal
         },
         widget_template = {
